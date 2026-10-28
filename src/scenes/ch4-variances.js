@@ -346,7 +346,7 @@ fn main() {
         // （第 5 句后段）
         // rustc
         const botIn = V.ep(t, L[6] - 0.5, L[6] + 0.2, 'outBack');
-        bot.root.at(V.lerp(1980, 1600, botIn), 640, 0.6, 0, V.fout(t, L[7] - 0.2, 0.4));
+        bot.root.at(V.lerp(2150, 1600, botIn), 640, 0.6, 0, V.fout(t, L[7] - 0.2, 0.4));
         bot.update(t, { mood: 'error', talk: S.talk('rustc', t) });
         err.at(V.lerp(1650, 820, botIn) , 300, 1, 0, V.fin(t, L[6]) * V.fout(t, L[7] - 0.2, 0.4));
 
@@ -470,7 +470,7 @@ fn widen<'short>(f: fn(&'static str))
         xB.at(MX - 200, 380, V.inn(t, L[3] + 2.5), 0, oB);
 
         const botIn = V.ep(t, L[4] - 0.5, L[4] + 0.2, 'outBack');
-        bot.root.at(V.lerp(1980, 1600, botIn), 640, 0.6);
+        bot.root.at(V.lerp(2150, 1600, botIn), 640, 0.6);
         bot.update(t, { mood: 'error', talk: S.talk('rustc', t) });
         err.at(800, 330, 1, 0, V.fin(t, L[4]));
 
