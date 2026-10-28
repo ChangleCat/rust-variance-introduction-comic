@@ -1,0 +1,5 @@
+# 生成物：配音用 macOS 系统语音生成（node tools/gen-voice.mjs），视频用 node tools/render-video.mjs 导出
+voice/
+out/
+.DS_Store
+*.log
