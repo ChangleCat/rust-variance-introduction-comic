@@ -18,13 +18,20 @@ URL 参数：`?t=120` 从第 120 秒开始，`?scene=v_invariant` 直接跳到�
 ### 声音
 
 - **音效与背景音乐**：全部用 WebAudio 现场合成（`src/audio.js`），没有任何外部素材。
-- **配音**：默认用浏览器自带的中文朗读（Chrome / Safari / Edge 均可）。在 macOS 上可以生成更自然、更稳定的配音：
+- **配音**：`voice/` 里是用 [IndexTTS 2.5](https://github.com/index-tts/index-tts) 生成的 89 句配音，三个角色各用一个官方示例音色（Claude：`voice_09`，Ferris：`voice_03`，rustc：`voice_10` 并加了一点电子回声）。缺少配音文件时，播放器会退回浏览器自带的中文朗读。
+
+  修改文案后重新生成配音：
 
   ```bash
-  node tools/gen-voice.mjs
+  # 1. 导出任务
+  node tools/gen-voice.mjs --export-jobs jobs.json --ref claude=examples/voice_09.wav --ref ferris=examples/voice_03.wav --ref rustc=examples/voice_10.wav
+  # 2. 在装有 IndexTTS 2.5 的机器上，于其 src 目录运行（模型只加载一次）
+  python indextts_batch.py --model_dir ../models/IndexTeam_IndexTTS-2.5 --jobs jobs.json --out wavs --fp16
+  # 3. 把 wavs 拷回来，转成 mp3 并写入 voice/manifest.js
+  node tools/gen-voice.mjs --from-wavs wavs
   ```
 
-  会在 `voice/` 下生成每句台词的 mp3 和 `manifest.js`，播放器检测到后自动改用它们。Ferris 的声音会被调高、rustc 会带一点电子回声。
+  没有 IndexTTS 时，也可以在 macOS 上用系统语音快速生成：`node tools/gen-voice.mjs`（音色较机械）。
 
 ### 导出视频
 
