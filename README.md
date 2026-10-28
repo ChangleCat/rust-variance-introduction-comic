@@ -6,7 +6,9 @@
 
 ## 观看
 
-纯静态网页，无需构建、无第三方依赖：
+**直接看视频：** [video/rust-variance.mp4](video/rust-variance.mp4)（1080p，11 分 57 秒，带字幕、配音、音效和音乐）
+
+**或者在浏览器里交互播放**（纯静态网页，无需构建、无第三方依赖）：
 
 - 直接双击打开 `index.html`，或
 - 在仓库目录运行 `python3 -m http.server`，访问 <http://localhost:8000>
@@ -37,6 +39,7 @@ URL 参数：`?t=120` 从第 120 秒开始，`?scene=v_invariant` 直接跳到�
 
 ```bash
 node tools/render-video.mjs            # 输出 out/variance.mp4（1080p30，含字幕、配音、音效、音乐）
+node tools/render-video.mjs --crf 26 --out video/rust-variance.mp4   # 仓库里那份视频的导出参数
 node tools/render-video.mjs --from 290 --to 400 --out out/part.mp4   # 只导出一段
 ```
 
