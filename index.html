@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rust 型变动画</title>
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+  <div id="app">
+    <div id="stage-wrap">
+      <svg id="stage" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid meet" aria-label="Rust 四种型变介绍动画"></svg>
+      <div id="subtitle"></div>
+      <button id="start" aria-label="开始播放">
+        <span class="start-ring"><span class="start-tri"></span></span>
+        <span class="start-title">型变 Variance</span>
+        <span class="start-sub">协变 · 逆变 · 不变 · 双变 —— 一部关于 Rust 的动画</span>
+        <span class="start-hint">点击开始（建议打开声音）</span>
+      </button>
+    </div>
+    <div id="controls">
+      <button id="btn-play" class="icon" aria-label="播放/暂停"><span class="i-play"></span><span class="i-pause"></span></button>
+      <span id="time">0:00 / 0:00</span>
+      <div id="seek">
+        <div id="seek-track"><div id="seek-fill"></div></div>
+        <div id="seek-marks"></div>
+        <div id="seek-knob"></div>
+        <div id="seek-tip"></div>
+      </div>
+      <select id="chapters" aria-label="章节"></select>
+      <select id="speed" aria-label="速度">
+        <option value="0.75">0.75×</option>
+        <option value="1" selected>1×</option>
+        <option value="1.25">1.25×</option>
+        <option value="1.5">1.5×</option>
+      </select>
+      <button class="tg" data-toggle="sub" title="字幕">字幕</button>
+      <button class="tg" data-toggle="voice" title="配音">配音</button>
+      <button class="tg" data-toggle="sfx" title="音效">音效</button>
+      <button class="tg" data-toggle="bgm" title="音乐">音乐</button>
+      <button id="btn-fs" class="icon" aria-label="全屏">⛶</button>
+    </div>
+    <div id="scene-title"></div>
+  </div>
+
+  <script src="src/script.js"></script>
+  <script src="voice/manifest.js" onerror="window.VOICE_MANIFEST=null"></script>
+  <script src="src/engine.js"></script>
+  <script src="src/audio.js"></script>
+  <script src="src/characters.js"></script>
+  <script src="src/widgets.js"></script>
+  <script src="src/scenes/common.js"></script>
+  <script src="src/scenes/ch0-opening.js"></script>
+  <script src="src/scenes/ch1-origin.js"></script>
+  <script src="src/scenes/ch2-development.js"></script>
+  <script src="src/scenes/ch3-rust.js"></script>
+  <script src="src/scenes/ch4-variances.js"></script>
+  <script src="src/scenes/ch5-compiler.js"></script>
+  <script src="src/scenes/ch6-ending.js"></script>
+  <script src="src/player.js"></script>
+</body>
+</html>
