@@ -2,7 +2,8 @@
 // 把动画逐帧导出成 MP4：画面（含字幕）+ 配音 + 音效 + 背景音乐。
 // 每一帧都是 t 的纯函数，所以导出结果与浏览器里看到的一模一样。
 //
-// 用法：node tools/render-video.mjs [--fps 30] [--from 0] [--to 秒] [--out out/variance.mp4] [--nosub]
+// 用法：node tools/render-video.mjs [--fps 30] [--from 0] [--to 秒] [--out out/variance.mp4] [--crf 18] [--nosub]
+//       --crf 越大文件越小（仓库里的 video/ 用 26）
 // 依赖：Node 22+（自带 WebSocket）、Google Chrome（可用 CHROME 环境变量指定路径）、ffmpeg
 // 建议先运行 node tools/gen-voice.mjs 生成配音，否则视频没有人声。
 import fs from 'node:fs';
@@ -21,6 +22,7 @@ const opt = (name, def) => {
 const FPS = parseFloat(opt('fps', '30'));
 const OUT = path.resolve(opt('out', path.join(root, 'out/variance.mp4')));
 const NOSUB = args.includes('--nosub');
+const CRF = opt('crf', '18');
 const CHROME = process.env.CHROME || ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find((p) => fs.existsSync(p));
 if (!CHROME) throw new Error('找不到 Chrome，请用 CHROME=/path/to/chrome 指定');
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
@@ -85,7 +87,7 @@ console.log(`时间轴 ${TL.total.toFixed(1)}s，导出 ${FROM}s–${TO.toFixed(
 
 // ---------- 画面 ----------
 const videoPath = path.join(tmp, 'video.mp4');
-const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'medium', videoPath], { stdio: ['pipe', 'inherit', 'inherit'] });
+const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', String(FPS), '-c:v', 'mjpeg', '-i', '-', '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', CRF, '-preset', 'slow', videoPath], { stdio: ['pipe', 'inherit', 'inherit'] });
 const ffDone = new Promise((r) => ff.on('close', r));
 const frames = Math.round((TO - FROM) * FPS);
 const t0 = Date.now();

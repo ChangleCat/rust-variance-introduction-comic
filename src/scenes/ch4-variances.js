@@ -208,8 +208,8 @@ fn main() {
     println!("{hello}");
 }`,
       });
-      const sq = code.squiggle(8, 23, 29);
-      const boxWorld = code.box(8, 23, 29, C.gold);
+      const sq = code.squiggle(8, 27, 33);
+      const boxWorld = code.box(8, 27, 33, C.gold);
 
       // 内存视图
       const mem = V.A(g);
