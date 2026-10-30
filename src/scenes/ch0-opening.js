@@ -3,7 +3,7 @@
   const V = window.V, C = V.C;
 
   V.defScene('op_hook', {
-    pauses: { 2: 0.6, 4: 0.9 },
+    pauses: { 2: 0.3, 4: 0.45 },
     sfx: (S) => {
       const { L, E } = S, d4 = E[4] - L[4];
       return [

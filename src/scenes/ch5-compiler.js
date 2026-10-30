@@ -45,7 +45,7 @@
   // ---------- 推断，而不是标注 ----------
   V.defScene('c_intro', {
     mood: 'tech',
-    pauses: { 0: 0.6, 1: 1.6 },
+    pauses: { 0: 0.3, 1: 0.8 },
     tail: 1.8,
     sfx: (S) => {
       const { L } = S;
@@ -107,7 +107,7 @@
   // ---------- 型变之格 ----------
   V.defScene('c_lattice', {
     mood: 'tech',
-    pauses: { 0: 0.6, 1: 1.4 },
+    pauses: { 0: 0.3, 1: 0.7 },
     tail: 1.6,
     sfx: (S) => {
       const { L } = S;
@@ -162,7 +162,7 @@
   // ---------- 逐个字段收集约束 ----------
   V.defScene('c_walk', {
     mood: 'tech',
-    pauses: { 0: 0.6, 1: 0.8, 2: 0.8, 3: 0.8 },
+    pauses: { 0: 0.3, 1: 0.4, 2: 0.4, 3: 0.4 },
     tail: 2.0,
     sfx: (S) => {
       const { L } = S;
@@ -222,7 +222,7 @@
   // ---------- 位置的乘法 ----------
   V.defScene('c_xform', {
     mood: 'tech',
-    pauses: { 0: 0.6, 1: 1.0 },
+    pauses: { 0: 0.3, 1: 0.5 },
     tail: 2.2,
     sfx: (S) => {
       const { L, E } = S, d1 = E[1] - L[1];
@@ -294,7 +294,7 @@
   // ---------- 不动点 ----------
   V.defScene('c_fixpoint', {
     mood: 'tech',
-    pauses: { 0: 1.6 },
+    pauses: { 0: 0.8 },
     tail: 2.6,
     sfx: (S) => {
       const { L } = S;
@@ -359,7 +359,7 @@
   // ---------- 型变表的用途 ----------
   V.defScene('c_use', {
     mood: 'tech',
-    pauses: { 0: 0.6, 1: 1.0, 2: 1.0 },
+    pauses: { 0: 0.3, 1: 0.5, 2: 0.5 },
     tail: 2.4,
     sfx: (S) => {
       const { L } = S;

@@ -3,7 +3,7 @@
   const V = window.V, C = V.C;
 
   V.defScene('end_recap', {
-    pauses: { 2: 0.6, 3: 0.6 },
+    pauses: { 2: 0.3, 3: 0.3 },
     tail: 7.0,
     sfx: (S) => {
       const { L, E } = S;

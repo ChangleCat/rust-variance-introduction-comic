@@ -3,7 +3,7 @@
   const V = window.V, C = V.C;
 
   V.defScene('rust_noinherit', {
-    pauses: { 0: 1.2 },
+    pauses: { 0: 0.6 },
     tail: 1.8,
     sfx: (S) => {
       const { L } = S;
@@ -80,7 +80,7 @@
   });
 
   V.defScene('rust_lifetimes', {
-    pauses: { 0: 0.6, 1: 1.0, 2: 1.0, 3: 0.6, 4: 0.6 },
+    pauses: { 0: 0.3, 1: 0.5, 2: 0.5, 3: 0.3, 4: 0.3 },
     tail: 1.8,
     sfx: (S) => {
       const { L } = S;

@@ -241,7 +241,7 @@
     },
   ];
 
-  // 估算朗读时长（秒）。有真实配音时，播放器取它与 voice/manifest.js 实测时长中的较大值。
+  // 估算朗读时长（秒）。只在没有真实配音时使用；有配音时播放器按 voice/manifest.js 的实测时长排时间轴。
   function estimateDuration(text) {
     let d = 0.45;
     for (const ch of text) {

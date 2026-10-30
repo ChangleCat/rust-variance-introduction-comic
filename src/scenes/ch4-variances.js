@@ -84,7 +84,7 @@
 
   // ======================= 协变 =======================
   V.defScene('v_covariant', {
-    pauses: { 0: 0.8, 1: 1.2, 2: 1.0 },
+    pauses: { 0: 0.4, 1: 0.6, 2: 0.5 },
     sfx: (S) => {
       const { L } = S;
       return [
@@ -172,7 +172,7 @@ print_it(hello); // ✓ 'static 缩成 'a`,
   // ======================= 不变 =======================
   V.defScene('v_invariant', {
     mood: 'tense',
-    pauses: { 0: 0.6, 1: 0.6, 2: 1.0, 3: 1.6, 4: 1.4, 5: 1.0, 6: 0.8 },
+    pauses: { 0: 0.3, 1: 0.3, 2: 0.5, 3: 0.8, 4: 0.7, 5: 0.5, 6: 0.4 },
     tail: 1.6,
     sfx: (S) => {
       const { L } = S;
@@ -373,7 +373,7 @@ fn main() {
     return m;
   }
   V.defScene('v_contravariant', {
-    pauses: { 0: 0.6, 1: 1.4, 2: 1.2, 3: 0.8 },
+    pauses: { 0: 0.3, 1: 0.7, 2: 0.6, 3: 0.4 },
     tail: 1.6,
     sfx: (S) => {
       const { L } = S;
@@ -484,7 +484,7 @@ fn widen<'short>(f: fn(&'static str))
 
   // ======================= 双变 =======================
   V.defScene('v_bivariant', {
-    pauses: { 0: 0.4, 1: 0.8, 2: 1.2, 3: 1.0 },
+    pauses: { 0: 0.2, 1: 0.4, 2: 0.6, 3: 0.5 },
     sfx: (S) => {
       const { L, E } = S;
       const d3 = E[3] - L[3];
@@ -565,8 +565,8 @@ fn widen<'short>(f: fn(&'static str))
 
   // ======================= 口诀与速查表 =======================
   V.defScene('v_cheatsheet', {
-    pauses: { 0: 1.4 },
-    tail: 5.0,
+    pauses: { 0: 0.7 },
+    tail: 4.0,
     sfx: (S) => {
       const { L, E } = S, d = E[0] - L[0];
       return [...[0, 1, 2, 3].map((i) => [L[0] + d * (i * 0.25) + 0.1, 'ding']), [L[1] + 0.2, 'whoosh'], ...[0, 1, 2, 3, 4, 5, 6, 7].map((i) => [L[1] + 0.8 + i * 0.25, 'tick']), [L[1] + 3.2, 'click'], [L[1] + 3.3, 'sparkle']];
