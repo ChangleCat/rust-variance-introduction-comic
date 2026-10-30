@@ -4,7 +4,7 @@
 
   // ---------- 子类型与替换原则 ----------
   V.defScene('origin_subtype', {
-    pauses: { 0: 0.6, 1: 0.6, 3: 0.4 },
+    pauses: { 0: 0.3, 1: 0.3, 3: 0.2 },
     sfx: (S) => {
       const { L } = S;
       return [
@@ -108,7 +108,7 @@
 
   // ---------- 类型构造器 ----------
   V.defScene('origin_question', {
-    pauses: { 0: 0.8, 1: 0.6 },
+    pauses: { 0: 0.4, 1: 0.3 },
     sfx: (S) => {
       const { L } = S;
       return [[L[0] + 0.2, 'pop'], [L[0] + 1.6, 'pop2'], [L[0] + 2.8, 'boing'], [L[1] + 0.2, 'whoosh'], [L[1] + 1.0, 'pop'], [L[1] + 1.6, 'pop'], [L[1] + 2.2, 'pop'], [L[2] + 0.3, 'rise'], [L[2] + 1.6, 'ding']];
@@ -209,7 +209,7 @@
   // ---------- Java 数组 ----------
   V.defScene('origin_java', {
     mood: 'calm',
-    pauses: { 1: 0.5, 2: 1.2, 3: 0.8 },
+    pauses: { 1: 0.25, 2: 0.6, 3: 0.4 },
     sfx: (S) => {
       const { L } = S;
       return [
@@ -324,7 +324,7 @@ animals[2] = new Dog();    // 也编译通过……`,
     return m;
   }
   V.defScene('origin_function', {
-    pauses: { 0: 0.4, 1: 0.8, 2: 0.6 },
+    pauses: { 0: 0.2, 1: 0.4, 2: 0.3 },
     sfx: (S) => {
       const { L } = S;
       return [[L[0] + 0.2, 'scroll'], [L[1] + 0.2, 'clank'], [L[1] + 1.0, 'gear'], [L[1] + 1.4, 'clank'], [L[2] + 0.4, 'rise'], [L[2] + 2.4, 'fall'], [L[3] + 0.3, 'chime']];

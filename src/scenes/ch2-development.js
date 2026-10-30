@@ -33,7 +33,7 @@
 
   // ---------- 使用处与声明处 ----------
   V.defScene('dev_langs', {
-    pauses: { 1: 0.6, 2: 0.8, 3: 0.8 },
+    pauses: { 1: 0.3, 2: 0.4, 3: 0.4 },
     sfx: (S) => {
       const { L } = S;
       return [
@@ -179,7 +179,7 @@
 
   // ---------- 双变 ----------
   V.defScene('dev_bivariant', {
-    pauses: { 0: 1.0 },
+    pauses: { 0: 0.5 },
     tail: 2.6,
     sfx: (S) => {
       const { L, E } = S;
@@ -240,7 +240,7 @@ cats.adopt(new Dog());        // 运行时：狗不会喵`,
 
   // ---------- 四种态度 ----------
   V.defScene('dev_summary', {
-    pauses: { 0: 0.4 },
+    pauses: { 0: 0.2 },
     tail: 2.4,
     sfx: (S) => {
       const { L, E } = S, d = E[1] - L[1];

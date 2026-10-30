@@ -2,7 +2,7 @@
 (function () {
   const V = window.V, C = V.C;
   const { SCRIPT, SPEAKERS, estimateDuration } = window.VARIANCE;
-  const LEAD = 0.8, GAP = 0.4, TAIL = 1.2, CARD = 3.2;
+  const LEAD = 0.6, GAP = 0.3, TAIL = 1.0, CARD = 2.6;
   const params = new URLSearchParams(location.search);
   const RENDER = params.has('render');
 
@@ -22,9 +22,9 @@
       const lines = sc.lines.map((l, i) => {
         const id = `${sc.id}_${i}`, speak = l[2] || l[1];
         const real = manifest && manifest.lines && manifest.lines[id];
-        // 画面按估算时长设计；有真实配音时取两者较大值，保证有无配音时间轴几乎一致
-        const est = estimateDuration(speak);
-        return { id, who: l[0], text: l[1], speak, dur: real ? Math.max(est, real + 0.15) : est };
+        // 有真实配音时按实测时长排，句与句之间只留 GAP；估算时长普遍比配音长 1~3 秒，
+        // 用它会在每句后面留下一大段空白。没有配音时才退回估算（浏览器朗读）。
+        return { id, who: l[0], text: l[1], speak, dur: real ? real + 0.1 : estimateDuration(speak) };
       });
       let t = def.lead === undefined ? LEAD : def.lead;
       const ls = [], le = [];

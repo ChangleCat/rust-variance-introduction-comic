@@ -1,4 +1,4 @@
-// 角色：Claude（光芒）、Ferris（螃蟹）、rustc（齿轮头机器人）、猫、狗。
+// 角色：Claude（Claude Code 的像素吉祥物 Clawd）、Ferris（Rust 吉祥物螃蟹）、rustc（齿轮头机器人）、猫、狗。
 // 每个角色返回 { root, update(t, o) }；root 是 V.A 演员，用 root.at(x, y, s, r, o) 摆位。
 (function () {
   const V = window.V, C = V.C;
@@ -20,127 +20,127 @@
   };
 
   // ---------------- Claude ----------------
+  // Claude Code 的像素吉祥物 Clawd：方块身体、两只竖长的黑眼睛、两侧短手、底下四条小腿。
+  // 网格单位 U，原点在眼睛附近，脚底约在 y = 120。
   V.Claude = function (parent, opts) {
     opts = opts || {};
+    const U = 18, OY = 30; // 身体：x ∈ [-6U, 6U]，y ∈ [OY - 3U, OY + 3U]
     const root = V.A(parent);
+    const shadow = V.el('ellipse', { cx: 0, cy: OY + 5 * U + 4, rx: 100, ry: 12, fill: '#000', opacity: 0.09 }, root);
     const bob = V.g(root);
-    const shadow = V.el('ellipse', { cx: 0, cy: 150, rx: 70, ry: 12, fill: '#000', opacity: 0.08 }, root);
-    const raysG = V.g(bob);
-    const N = 12, rays = [];
-    for (let i = 0; i < N; i++) rays.push(V.el('path', { fill: C.claude }, raysG));
-    V.el('circle', { r: 58, fill: C.claude }, bob);
-    V.el('circle', { r: 50, fill: '#E58B6C', opacity: 0.55 }, bob);
-    const face = V.g(bob);
-    const cheekL = V.el('ellipse', { cx: -30, cy: 10, rx: 9, ry: 6, fill: '#FF9C8A', opacity: 0.5 }, face);
-    const cheekR = V.el('ellipse', { cx: 30, cy: 10, rx: 9, ry: 6, fill: '#FF9C8A', opacity: 0.5 }, face);
-    const eyeL = V.el('ellipse', { cx: -18, cy: -8, rx: 7, ry: 10, fill: '#3A2016' }, face);
-    const eyeR = V.el('ellipse', { cx: 18, cy: -8, rx: 7, ry: 10, fill: '#3A2016' }, face);
-    const glintL = V.el('circle', { cx: -16, cy: -12, r: 2.5, fill: '#fff' }, face);
-    const glintR = V.el('circle', { cx: 20, cy: -12, r: 2.5, fill: '#fff' }, face);
-    const happyEyes = V.el('path', { d: 'M-26 -6 Q-18 -18 -10 -6 M10 -6 Q18 -18 26 -6', stroke: '#3A2016', 'stroke-width': 5, fill: 'none', 'stroke-linecap': 'round' }, face);
-    const mouth = V.el('path', { fill: '#3A2016', stroke: '#3A2016', 'stroke-width': 4, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, face);
+    const sparks = V.g(bob);
+    const sparkEls = [];
+    for (let i = 0; i < 10; i++) sparkEls.push(V.el('rect', { width: U * 0.5, height: U * 0.5, fill: i % 3 ? C.claude : C.gold }, sparks));
+    const legEls = [-5, -3, 2, 4].map((x) => ({ x, el: V.el('rect', { x: x * U, width: U, fill: C.claude, 'shape-rendering': 'crispEdges' }, bob) }));
+    const armEls = [-1, 1].map((side) => ({ side, el: V.el('rect', { height: 2 * U, fill: C.claude, 'shape-rendering': 'crispEdges' }, bob) }));
+    const body = V.g(bob);
+    V.el('rect', { x: -6 * U, y: OY - 3 * U, width: 12 * U, height: 6 * U, fill: C.claude, 'shape-rendering': 'crispEdges' }, body);
+    const face = V.g(body);
+    const eyes = [-4, 3].map((x) => V.el('rect', { x: x * U, width: U, fill: '#141414', 'shape-rendering': 'crispEdges' }, face));
+    // 开心时眼睛变成像素“^”
+    const happyEyes = [-4, 3].map((x) => V.el('path', {
+      d: `M${x * U - 4} ${OY - U * 0.4} L${x * U + U / 2} ${OY - U * 1.5} L${x * U + U + 4} ${OY - U * 0.4}`,
+      stroke: '#141414', 'stroke-width': U * 0.5, fill: 'none', 'stroke-linejoin': 'miter', 'stroke-linecap': 'square',
+    }, face));
     const seed = opts.seed || 0.7;
-
-    function rayPath(a, r0, r1, w0, w1) {
-      const c = Math.cos(a), s = Math.sin(a), px = -s, py = c;
-      const bx = c * r0, by = s * r0, tx = c * r1, ty = s * r1;
-      return `M${(bx + px * w0).toFixed(1)} ${(by + py * w0).toFixed(1)} L${(tx + px * w1).toFixed(1)} ${(ty + py * w1).toFixed(1)} A${w1} ${w1} 0 0 0 ${(tx - px * w1).toFixed(1)} ${(ty - py * w1).toFixed(1)} L${(bx - px * w0).toFixed(1)} ${(by - py * w0).toFixed(1)}Z`;
-    }
 
     function update(t, o) {
       o = o || {};
-      const talk = o.talk || 0, mood = o.mood || 'neutral';
-      const float = o.still ? 0 : V.osc(t, 0.45, seed) * 8;
-      bob.setAttribute('transform', `translate(0 ${float.toFixed(1)}) rotate(${(o.tilt || 0) + V.osc(t, 0.3, seed) * 2})`);
-      V.set(shadow, { rx: 70 - float * 0.8 });
-      const spin = t * 4 + (o.spin || 0);
-      raysG.setAttribute('transform', `rotate(${spin.toFixed(1)})`);
+      const talk = o.talk || 0, mood = o.mood || 'neutral', burst = o.burst || 0, walk = o.walk || 0;
+      // 说话时一跳一跳；闲着时轻轻上下
+      const hopTalk = talk * Math.abs(Math.sin(t * 6.5 + seed)) * 7;
+      const idle = o.still ? 0 : (V.osc(t, 0.45, seed) * 0.5 + 0.5) * 4;
+      const lift = idle + hopTalk + walk * Math.abs(Math.sin(t * 12)) * 8;
+      const squash = 1 - talk * 0.035 * Math.sin(t * 13 + seed) + burst * 0.06;
+      bob.setAttribute('transform', `translate(0 ${(-lift).toFixed(1)}) rotate(${(o.tilt || 0).toFixed(1)} 0 ${OY}) translate(0 ${OY + 3 * U}) scale(${(2 - squash).toFixed(3)} ${squash.toFixed(3)}) translate(0 ${-(OY + 3 * U)})`);
+      V.set(shadow, { rx: 100 - lift * 1.2 });
+      // 腿：走路时交替抬起
+      legEls.forEach((l, i) => {
+        const up = walk ? Math.max(0, Math.sin(t * 12 + (i % 2) * Math.PI)) * U * 0.6 : 0;
+        V.set(l.el, { y: OY + 3 * U - 1, height: 2 * U + 1 - up });
+      });
+      // 手：说话时上下摆动；point 时朝那边伸长
       const pa = o.point !== undefined && o.point !== null ? (o.point * Math.PI) / 180 : null;
-      const burst = o.burst || 0;
-      for (let i = 0; i < N; i++) {
-        const a = (i / N) * Math.PI * 2 - Math.PI / 2;
-        let len = (i % 2 ? 92 : 112) * (1 + 0.05 * Math.sin(i * 1.7));
-        len *= 1 + 0.035 * V.osc(t, 0.4, i) + talk * 0.07 * Math.sin(t * 13 + i * 0.9) + burst * 0.35;
-        if (pa !== null) {
-          let da = Math.atan2(Math.sin(a + (spin * Math.PI) / 180 - pa), Math.cos(a + (spin * Math.PI) / 180 - pa));
-          len *= 1 + (o.pointAmt === undefined ? 1 : o.pointAmt) * 0.45 * Math.max(0, 1 - Math.abs(da) / 0.45);
+      armEls.forEach((a, i) => {
+        let len = 2 * U, dy = 0;
+        if (talk > 0.01) dy = Math.round(Math.sin(t * 7 + i * Math.PI) * talk * 1.2) * (U / 2);
+        if (mood === 'happy' || mood === 'surprised') dy -= U / 2;
+        if (pa !== null && Math.sign(Math.cos(pa)) === a.side) {
+          len += U * 1.5 * (o.pointAmt === undefined ? 1 : o.pointAmt);
+          dy = Math.round(Math.sin(pa) * 2) * (U / 2);
         }
-        rays[i].setAttribute('d', rayPath(a, 30, len, 15, 9));
-      }
-      // 表情
+        V.set(a.el, { x: a.side < 0 ? -6 * U - len + 1 : 6 * U - 1, y: OY - U + dy, width: len });
+      });
+      // 眼睛
       const look = o.look || [0, 0];
-      face.setAttribute('transform', `translate(${look[0] * 8} ${look[1] * 6})`);
-      const bl = blinkAmt(t, seed * 5);
-      const happy = mood === 'happy';
-      const sur = mood === 'surprised' ? 1 : 0;
-      [eyeL, eyeR, glintL, glintR].forEach((e) => V.op(e, happy ? 0 : 1));
-      V.op(happyEyes, happy ? 1 : 0);
-      const ry = (10 + sur * 4) * (1 - bl * 0.9);
-      V.set(eyeL, { ry, rx: 7 + sur * 2 });
-      V.set(eyeR, { ry, rx: 7 + sur * 2 });
-      V.op(cheekL, 0.4 + (happy ? 0.3 : 0));
-      V.op(cheekR, 0.4 + (happy ? 0.3 : 0));
-      let m;
-      if (talk > 0.01) {
-        const open = 3 + 11 * talk * Math.abs(Math.sin(t * 12.5)) * (0.6 + 0.4 * Math.abs(Math.sin(t * 5.3)));
-        m = `M-11 14 Q0 ${14 + open * 1.6} 11 14 Q0 ${14 + open * 0.3} -11 14Z`;
-      } else if (sur) m = 'M-6 18 Q0 8 6 18 Q0 28 -6 18Z';
-      else if (mood === 'think') m = 'M-10 18 Q0 14 10 20 Q0 17 -10 18Z';
-      else m = 'M-13 13 Q0 26 13 13 Q0 19 -13 13Z';
-      mouth.setAttribute('d', m);
+      const think = mood === 'think';
+      const fx = Math.round(look[0] * 2) * (U / 4), fy = Math.round((look[1] - (think ? 1 : 0)) * 2) * (U / 4);
+      face.setAttribute('transform', `translate(${fx} ${fy})`);
+      const happy = mood === 'happy', sur = mood === 'surprised';
+      const bl = blinkAmt(t, seed * 5, 3.9);
+      const eh = (sur ? 2.5 : 2) * U * (1 - bl * 0.8);
+      eyes.forEach((e, i) => {
+        V.op(e, happy ? 0 : 1);
+        V.set(e, { y: OY - U * (sur ? 2.25 : 2) + (2 * U - eh) * (sur ? 0 : 0.5), height: eh, width: sur ? U * 1.25 : U, x: (i ? 3 : -4) * U - (sur ? U * 0.125 : 0) });
+      });
+      happyEyes.forEach((e) => V.op(e, happy ? 1 : 0));
+      // 像素火花
+      sparkEls.forEach((s, i) => {
+        const a = (i / sparkEls.length) * Math.PI * 2 + 0.3;
+        const r = 130 + burst * 70 + (i % 2) * 20;
+        V.set(s, { x: Math.cos(a) * r - U / 4, y: OY + Math.sin(a) * r * 0.75 - U / 4 });
+        V.op(s, burst * 1.6);
+      });
     }
     return { root, update };
   };
 
   // ---------------- Ferris ----------------
+  // Rust 官方吉祥物 Ferris：橙红色的扁圆身体、一圈尖刺边、两只高举的大钳子、
+  // 直接长在身上的黑眼睛（带白色高光）和一张张开的黑色笑嘴。
   V.Ferris = function (parent, opts) {
     opts = opts || {};
     const root = V.A(parent);
     const shadow = V.el('ellipse', { cx: 0, cy: 95, rx: 130, ry: 14, fill: '#000', opacity: 0.09 }, root);
     const bob = V.g(root);
+    // 腿：深红色、短而尖
     const legs = [];
     const legG = V.g(bob);
     for (let side = -1; side <= 1; side += 2) {
-      for (let k = 0; k < 3; k++) legs.push({ side, k, el: V.el('path', { stroke: C.rustDark, 'stroke-width': 11, fill: 'none', 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, legG) });
+      for (let k = 0; k < 3; k++) legs.push({ side, k, el: V.el('path', { fill: C.rustDark, stroke: C.rustDark, 'stroke-width': 3, 'stroke-linejoin': 'round' }, legG) });
     }
     // 钳子
     const claws = [];
     for (let side = -1; side <= 1; side += 2) {
-      const arm = V.el('path', { stroke: C.rust, 'stroke-width': 16, fill: 'none', 'stroke-linecap': 'round' }, bob);
+      const arm = V.el('path', { stroke: C.rust, 'stroke-width': 18, fill: 'none', 'stroke-linecap': 'round' }, bob);
       const cg = V.g(bob);
-      const lower = V.el('path', { d: 'M0 0 C 10 22, 48 26, 58 4 C 40 12, 18 10, 0 0Z', fill: C.rust, stroke: C.rust, 'stroke-width': 6, 'stroke-linejoin': 'round' }, cg);
+      const lower = V.el('path', { d: 'M-6 6 C -10 40, 54 46, 68 6 C 50 18, 22 16, 6 -4 Z', fill: C.rust, stroke: C.rust, 'stroke-width': 6, 'stroke-linejoin': 'round' }, cg);
       const upperG = V.g(cg);
-      V.el('path', { d: 'M0 0 C 6 -30, 52 -36, 62 -6 C 40 -16, 20 -12, 0 0Z', fill: C.rust, stroke: C.rust, 'stroke-width': 6, 'stroke-linejoin': 'round' }, upperG);
-      V.el('circle', { r: 17, fill: C.rust }, cg);
+      V.el('path', { d: 'M0 -4 C 2 -40, 58 -44, 70 -8 C 48 -20, 24 -16, 6 2 Z', fill: C.rust, stroke: C.rust, 'stroke-width': 6, 'stroke-linejoin': 'round' }, upperG);
+      V.el('circle', { r: 22, fill: C.rust }, cg);
       claws.push({ side, arm, cg, upperG, lower });
     }
-    // 身体：带锯齿的壳
-    let d = '';
+    // 身体：上缘一圈尖刺，下缘平缓
     const pts = [];
-    for (let i = 0; i <= 18; i++) {
-      const a = Math.PI + (i / 18) * Math.PI;
-      const r = i % 2 === 0 ? 1 : 0.84;
-      pts.push([Math.cos(a) * 128 * r, Math.sin(a) * 74 * r + 8]);
+    const NS = 26;
+    for (let i = 0; i <= NS; i++) {
+      const a = Math.PI + (i / NS) * Math.PI;
+      const r = i % 2 === 0 ? 0.86 : 1;
+      pts.push([Math.cos(a) * 132 * r, Math.sin(a) * 78 * r + 14]);
     }
-    d = 'M' + pts.map((p) => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
-    d += ' C 120 50, 60 70, 0 70 C -60 70, -120 50, -128 8Z';
-    V.el('path', { d, fill: C.rust, stroke: C.rust, 'stroke-width': 12, 'stroke-linejoin': 'round' }, bob);
-    V.el('path', { d: 'M-100 30 C -60 58, 60 58, 100 30', stroke: '#FF7A33', 'stroke-width': 10, fill: 'none', 'stroke-linecap': 'round', opacity: 0.7 }, bob);
-    // 眼睛
+    let d = 'M' + pts.map((p) => p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' L');
+    d += ' C 112 44, 70 66, 0 66 C -70 66, -112 44, -113.5 14Z';
+    V.el('path', { d, fill: C.rust, stroke: C.rust, 'stroke-width': 7, 'stroke-linejoin': 'round' }, bob);
+    // 眼睛：黑色，带白色高光
     const eyes = [];
     for (let side = -1; side <= 1; side += 2) {
-      const stalk = V.el('path', { stroke: '#2B1A12', 'stroke-width': 6, fill: 'none', 'stroke-linecap': 'round' }, bob);
       const ball = V.g(bob);
-      V.el('circle', { r: 17, fill: '#fff', stroke: '#2B1A12', 'stroke-width': 4 }, ball);
-      const pupil = V.el('circle', { r: 8, fill: '#1A0F0A' }, ball);
-      const glint = V.el('circle', { r: 2.5, fill: '#fff' }, ball);
-      const cid = 'eyeclip' + V.uid++;
-      V.el('circle', { r: 15 }, V.el('clipPath', { id: cid }, ball));
-      const lid = V.el('rect', { x: -19, y: -19, width: 38, height: 0, fill: C.rust, 'clip-path': `url(#${cid})` }, ball);
-      eyes.push({ side, stalk, ball, pupil, glint, lid });
+      const iris = V.el('ellipse', { rx: 15, ry: 17, fill: '#0F0A08' }, ball);
+      const glint = V.el('circle', { r: 5.5, fill: '#fff' }, ball);
+      const brow = V.el('path', { stroke: '#2B1A12', 'stroke-width': 5, 'stroke-linecap': 'round', fill: 'none' }, ball);
+      eyes.push({ side, ball, iris, glint, brow });
     }
-    const mouth = V.el('path', { fill: '#2B1A12', stroke: '#2B1A12', 'stroke-width': 4, 'stroke-linejoin': 'round' }, bob);
-    const blush = [V.el('ellipse', { cx: -52, cy: 4, rx: 13, ry: 7, fill: '#FF9C8A', opacity: 0.55 }, bob), V.el('ellipse', { cx: 52, cy: 4, rx: 13, ry: 7, fill: '#FF9C8A', opacity: 0.55 }, bob)];
+    const mouth = V.el('path', { fill: '#0F0A08', stroke: '#0F0A08', 'stroke-width': 3, 'stroke-linejoin': 'round' }, bob);
     const sweat = V.el('path', { d: 'M150 -70 Q 160 -50 150 -42 Q 140 -50 150 -70Z', fill: '#7CC7FF' }, bob);
     const seed = opts.seed || 1.3;
 
@@ -152,47 +152,47 @@
       bob.setAttribute('transform', `translate(${shake.toFixed(1)} ${(-hop).toFixed(1)})`);
       V.set(shadow, { rx: 130 - hop });
       legs.forEach((l, i) => {
-        const bx = l.side * (70 + l.k * 24), by = 40 - l.k * 8;
-        const lift = walk * Math.max(0, Math.sin(t * 14 + i * 2.1)) * 14;
-        const kx = l.side * (110 + l.k * 22), ky = 60 - lift - l.k * 4;
-        const fx = l.side * (118 + l.k * 26), fy = 92 - lift * 0.4;
-        l.el.setAttribute('d', `M${bx} ${by} Q${kx} ${ky - 30} ${fx} ${fy}`);
+        const bx = l.side * (58 + l.k * 26), by = 46 - l.k * 8;
+        const lift = walk * Math.max(0, Math.sin(t * 14 + i * 2.1)) * 12;
+        const tx = l.side * (104 + l.k * 22), ty = 96 - lift * 0.6 - l.k * 4;
+        // 一条尖腿：基部宽，向外下方收成尖
+        l.el.setAttribute('d', `M${bx - l.side * 12} ${by + 4} Q${tx - l.side * 18} ${ty - 34 - lift} ${tx} ${ty} Q${tx + l.side * 2} ${ty - 50 - lift} ${bx + l.side * 14} ${by - 10}Z`);
       });
       const excited = mood === 'happy' || mood === 'surprised' ? 1 : 0;
       claws.forEach((c, i) => {
         const raise = (o.raise !== undefined ? o.raise : 0) + excited * 0.6 + talk * 0.25 * Math.sin(t * 4 + i);
-        const sx = c.side * 118, sy = -4;
-        const cx = c.side * (175 + raise * 10), cy = -52 - raise * 40 + Math.sin(t * 2 + i) * 4;
-        c.arm.setAttribute('d', `M${sx} ${sy} Q${c.side * 165} ${sy + 10} ${cx} ${cy}`);
-        const ang = c.side < 0 ? 200 - raise * 25 : -20 + raise * 25;
+        const sx = c.side * 112, sy = 0;
+        const cx = c.side * (168 + raise * 10), cy = -58 - raise * 40 + Math.sin(t * 2 + i) * 4;
+        c.arm.setAttribute('d', `M${sx} ${sy} Q${c.side * 162} ${sy + 8} ${cx} ${cy}`);
+        const ang = c.side < 0 ? 205 - raise * 25 : -25 + raise * 25;
         c.cg.setAttribute('transform', `translate(${cx} ${cy}) rotate(${ang}) scale(1 ${c.side < 0 ? -1 : 1})`);
         const snap = o.snap ? Math.abs(Math.sin(t * 9 + i)) : 0.35 + talk * 0.4 * Math.abs(Math.sin(t * 7 + i));
-        c.upperG.setAttribute('transform', `rotate(${(-snap * 28).toFixed(1)})`);
+        c.upperG.setAttribute('transform', `rotate(${(-snap * 26).toFixed(1)})`);
       });
       const bl = blinkAmt(t, seed * 3, 4.1);
       const look = o.look || [0, 0];
       const sur = mood === 'surprised' || mood === 'scared';
+      const sad = mood === 'worried' || mood === 'scared';
       eyes.forEach((e) => {
-        const bx = e.side * 32, by = -50;
-        const ex = e.side * (40 + (sur ? 6 : 0)) + Math.sin(t * 1.6 + e.side) * 3, ey = -102 - (sur ? 16 : 0) + Math.cos(t * 1.3 + e.side) * 3;
-        e.stalk.setAttribute('d', `M${bx} ${by} Q${bx + e.side * 2} ${(by + ey) / 2} ${ex} ${ey}`);
-        e.ball.setAttribute('transform', `translate(${ex.toFixed(1)} ${ey.toFixed(1)}) scale(${sur ? 1.15 : 1})`);
-        const px = look[0] * 7, py = look[1] * 6;
-        V.set(e.pupil, { cx: px, cy: py, r: sur ? 6 : 8 });
-        V.set(e.glint, { cx: px + 3, cy: py - 3 });
-        const lidH = mood === 'happy' ? 18 : mood === 'worried' ? 12 : bl * 38;
-        V.set(e.lid, { height: lidH });
+        const ex = e.side * 36 + look[0] * 5, ey = -24 + look[1] * 4 - (sur ? 4 : 0);
+        e.ball.setAttribute('transform', `translate(${ex.toFixed(1)} ${ey.toFixed(1)}) scale(${sur ? 1.18 : 1})`);
+        V.set(e.iris, { ry: 17 * (1 - bl * 0.88) });
+        V.set(e.glint, { cx: -4 + look[0] * 2, cy: -6 + look[1] * 2 });
+        V.op(e.glint, bl > 0.5 ? 0 : 1);
+        // 担心时出现八字眉
+        V.set(e.brow, { d: `M${e.side * 14} -26 L${-e.side * 10} -36` });
+        V.op(e.brow, sad ? 1 : 0);
       });
       let m;
       if (talk > 0.01) {
-        const open = 4 + 14 * talk * Math.abs(Math.sin(t * 13)) * (0.6 + 0.4 * Math.abs(Math.sin(t * 4.7)));
-        m = `M-16 8 Q0 ${8 + open * 1.5} 16 8 Q0 ${8 + open * 0.2} -16 8Z`;
-      } else if (sur) m = 'M-9 14 Q0 0 9 14 Q0 28 -9 14Z';
-      else if (mood === 'worried' || mood === 'scared') m = 'M-16 18 Q0 6 16 18 Q0 12 -16 18Z';
-      else m = 'M-18 6 Q0 26 18 6 Q0 14 -18 6Z';
+        const open = 6 + 18 * talk * Math.abs(Math.sin(t * 13)) * (0.6 + 0.4 * Math.abs(Math.sin(t * 4.7)));
+        m = `M-24 4 Q0 9 24 4 Q22 ${8 + open} 0 ${10 + open} Q-22 ${8 + open} -24 4Z`;
+      } else if (sur) m = 'M-11 14 Q-11 0 0 0 Q11 0 11 14 Q11 28 0 28 Q-11 28 -11 14Z';
+      else if (sad) m = 'M-18 20 Q0 4 18 20 Q0 12 -18 20Z';
+      else if (mood === 'happy') m = 'M-30 2 Q0 9 30 2 Q28 34 0 36 Q-28 34 -30 2Z';
+      else m = 'M-25 4 Q0 10 25 4 Q22 28 0 30 Q-22 28 -25 4Z';
       mouth.setAttribute('d', m);
-      V.op(sweat, mood === 'worried' || mood === 'scared' ? 1 : 0);
-      blush.forEach((b) => V.op(b, mood === 'happy' ? 0.8 : 0.45));
+      V.op(sweat, sad ? 1 : 0);
     }
     return { root, update };
   };
